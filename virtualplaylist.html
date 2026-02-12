@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Virtual Playlist</title>
+        <style>
+            body { background: #e79dac; color: rgb(226, 75, 100); font-family: 'Georgia', serif; text-align: center; padding: 100px 20px; }
+             nav { margin-bottom: 40px; }
+             nav a { color: #970a51; text-decoration: none; font-weight: bold; margin: 0 15px; }
+            
+.music-container {
+    background: #fff0f5; /* Soft Pink */
+    border: 2px solid #ffb7d5;
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 300px;
+    margin: 20px auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.player-header h3 {
+    color: #d63384;
+    font-size: 1rem;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.control-btn {
+    background: #ffb7d5;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.control-btn:hover { transform: scale(1.1); background: #ff85b3; }
+
+.progress-container {
+    flex-grow: 1;
+    height: 8px;
+    background: #ffe4ef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #ff85b3;
+}
+
+.playlist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.playlist li {
+    padding: 10px;
+    margin-top: 5px;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ff85b3;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 1px solid #ffe4ef;
+}
+
+.playlist li:hover {
+    background: #ffebf2;
+    padding-left: 15px;
+}
+
+.playlist li.active {
+    background: #ffb7d5;
+    color: white;
+    font-weight: bold;
+}
+
+.playlist {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    justify-content: space-between;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0; /* Adds space above the controls */
+}
+
+.playlist li {
+    width: 45%; /* This ensures 2 items per row (5 on each side) */
+    padding: 8px;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ff85b3;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+    border: 1px solid #ffe4ef;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.playlist li:hover {
+    background: #ffebf2;
+}
+
+.playlist li.active {
+    background: #ffb7d5;
+    color: white;
+}
+</style>
+
+<body>
+    <nav>
+        <a href="virtualplaylist.html">Music Playlist</a> |
+        <a href="gallery.html">Memories</a> | 
+        <a href="message.html"> Letter</a>  |
+    </nav>
+
+<div class="music-container">
+    <div class="player-header">
+        <span class="music-icon">🎵</span>
+        <h3 id="current-song-title">Select a song...</h3>
+    </div>
+    
+    <!-- The Hidden Audio Element -->
+    <audio id="main-audio" src=""></audio>
+
+    <div class="controls">
+        <div class="controls">
+    <button id="prev-btn" class="control-btn">⏮</button>
+    
+    <button id="play-btn" class="control-btn">▶</button>
+    
+    <button id="next-btn" class="control-btn">⏭</button>
+
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+</div>
+
+<div style="margin-top: 10px;">
+    <span style="color: #d63384; font-size: 0.8rem;">Volume: </span>
+    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1" style="accent-color: #ff85b3;">
+</div>
+    </div>
+
+    <ul class="playlist" id="playlist">
+        <!-- Add your songs here. 'data-src' is the filename on GitHub -->
+        <li data-src="paranoia.m4a">1. Paranoia</li>
+        <li data-src="sienna.m4a">2. Sienna</li>
+        <li data-src="noonenoticed.m4a">3. No One Noticed</li>
+        <li data-src="heavy.m4a">4. Heavy</li>
+        <li data-src="lejosdeti.m4a">5.Lejos De Ti</li>
+        <li data-src="backtome.m4a">6. Back To Me</li>
+        <li data-src="ifyouwanto.m4a">7. If You Want To</li>
+        <li data-src="theperfectpair.m4a">8. The Perfect Pair</li>
+        <li data-src="beaches.m4a">9. Beaches</li>
+        <li data-src="deathbed.m4a">10. Death Bed</li>
+    </ul>
+</div>
+
+<script>
+const audio = document.getElementById('main-audio');
+const playBtn = document.getElementById('play-btn');
+const progressBar = document.getElementById('progress-bar');
+const playlistItems = document.querySelectorAll('#playlist li');
+const songTitle = document.getElementById('current-song-title');
+const volumeSlider = document.getElementById('volume-slider');
+const nextBtn = document.getElementById('next-btn');
+const prevBtn = document.getElementById('prev-btn');
+
+// Volume Control
+volumeSlider.addEventListener('input', (e) => {
+    audio.volume = e.target.value;
+});
+
+// Function to find which song is playing and play the next one
+function changeSong(direction) {
+    let currentIdx = Array.from(playlistItems).findIndex(item => item.classList.contains('active'));
+    let nextIdx = (currentIdx + direction + playlistItems.length) % playlistItems.length;
+    
+    // Trigger the click event on the next/previous list item
+    playlistItems[nextIdx].click();
+}
+
+nextBtn.addEventListener('click', () => changeSong(1));
+prevBtn.addEventListener('click', () => changeSong(-1));
+
+// Auto-play next song when the current one ends
+audio.addEventListener('ended', () => changeSong(1));
+
+playlistItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const source = item.getAttribute('data-src');
+        console.log("Switching to file:", source); // Check this in F12 Console
+        
+        playlistItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        audio.src = source;
+        songTitle.innerText = item.innerText;
+        
+        // This 'play' promise helps catch errors if the file is missing
+        audio.play().catch(error => {
+            console.error("Playback failed. Check if the filename is spelled correctly!", error);
+            alert("Could not find or play: " + source);
+        });
+        
+        playBtn.innerText = '⏸';
+    });
+});
+
+// Play/Pause toggle
+playBtn.addEventListener('click', () => {
+    if (!audio.src || audio.src.includes('undefined')) {
+        alert("Please select a song from the list first!");
+        return;
+    }
+    if (audio.paused) {
+        audio.play();
+        playBtn.innerText = '⏸';
+    } else {
+        audio.pause();
+        playBtn.innerText = '▶';
+    }
+});
+
+audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = percent + '%';
+    }
+});
+</script>
+</body>
+</html>
+

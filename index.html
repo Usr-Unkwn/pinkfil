@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Surprise</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        body { background: rgb(221, 79, 145); color: rgb(226, 75, 100); font-family: 'Georgia', serif; text-align: center; padding: 100px 20px; }
+        .gate-box { border: 2px dashed #f8bbd0; padding: 40px; border-radius: 20px; background: white; display: inline-block; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        input { padding: 12px; border-radius: 5px; border: 1px solid #f8bbd0; margin-bottom: 10px; width: 200px; }
+        button { background: #d63384; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #b02a6b; }
+    </style>
+</head>
+<body>
+
+    <div class="gate-box">
+        <h1>For Your Eyes Only 🎂</h1>
+        <p>Enter our secret code to unlock your gift...</p>
+        <input type="password" id="birthday-code" placeholder="The secret word...">
+        <br>
+        <button onclick="unlock()">Open Gift</button>
+        <p id="error-msg" style="color: #833; font-size: 0.9em;"></p>
+    </div>
+
+    <script>
+        function unlock() {
+            var code = document.getElementById("birthday-code").value;
+            if (code === "bestie") { // <--- CHANGE THIS TO YOUR SECRET WORD
+                // Trigger Confetti
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                
+                // Wait for the celebration, then redirect
+                setTimeout(function() {
+                    window.location.href = "gallery.html";
+                }, 2000);
+            } else {
+                document.getElementById("error-msg").innerText = "That's not the key! Try again.";
+            }
+        }
+    </script>
+</body>
+</html>
