@@ -16,9 +16,9 @@
 <body>
 
     <div class="gate-box">
-        <h1>For Your Eyes Only 🎂</h1>
-        <p>Enter our secret code to unlock your gift...</p>
-        <input type="password" id="birthday-code" placeholder="The secret word...">
+        <h1>Happy Birthday!🎂</h1>
+        <p>Enter your favorite color</p>
+        <input type="password" id="birthday-code" placeholder="Feeling ko maling pink nagawa ko">
         <br>
         <button onclick="unlock()">Open Gift</button>
         <p id="error-msg" style="color: #833; font-size: 0.9em;"></p>
@@ -27,7 +27,7 @@
     <script>
         function unlock() {
             var code = document.getElementById("birthday-code").value;
-            if (code === "bestie") { // <--- CHANGE THIS TO YOUR SECRET WORD
+            if (code === "pink") { // <--- CHANGE THIS TO YOUR SECRET WORD
                 // Trigger Confetti
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
                 
@@ -36,7 +36,7 @@
                     window.location.href = "gallery.html";
                 }, 2000);
             } else {
-                document.getElementById("error-msg").innerText = "That's not the key! Try again.";
+                document.getElementById("error-msg").innerText = "Nakalimutan ata favorite color mo ah";
             }
         }
     </script>
